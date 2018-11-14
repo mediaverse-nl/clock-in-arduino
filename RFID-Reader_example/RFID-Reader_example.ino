@@ -17,7 +17,7 @@
 #include <Wire.h>
 #endif
 
-
+//really handy these aRE tests.
 //this has changed.
 
 #define SS_PIN D8 //Pin on WeMos D1 Mini
