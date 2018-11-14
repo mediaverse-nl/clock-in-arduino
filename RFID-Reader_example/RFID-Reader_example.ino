@@ -18,6 +18,8 @@
 #endif
 
 
+//this has changed.
+
 #define SS_PIN D8 //Pin on WeMos D1 Mini
 #define RST_PIN 15 // RST-PIN for RC522 - RFID - SPI - Modul GPIO15
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
