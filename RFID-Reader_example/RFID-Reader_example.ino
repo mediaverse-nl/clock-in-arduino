@@ -17,12 +17,24 @@
 #include <Wire.h>
 #endif
 
-//really handy these aRE tests.
-//this has changed.
+char ssid[] = "IP_Freely 2GHz";      // your network SSID (name)
+char pass[] = "hhaalloo";            // your network password
+int status = WL_IDLE_STATUS;         // the Wifi radio's status
+
+int api_delay = 500; //so we don't spam the API
+
+char api[] = "clock-in.mediaverse-dev.nl";
+RestClient client = RestClient(api);
+
+//reusable test variables
+char* post_body = "";
+
 
 #define SS_PIN D8 //Pin on WeMos D1 Mini
 #define RST_PIN 15 // RST-PIN for RC522 - RFID - SPI - Modul GPIO15
+
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
+
 U8G2_SSD1327_MIDAS_128X128_F_HW_I2C u8g2(U8G2_R2, /* reset=*/ U8X8_PIN_NONE);//for the oled screen
 byte buzzerPin = 16;//defines buzzerpin 16 equals D0 on the wemos
 
@@ -46,9 +58,13 @@ void connectionSucces(){
 }
 
 
-void error(){
-  //the error sounds 
-  //the error message.
+void displayStartMsg(){
+ //the start message
+  u8g2.clearBuffer(); // clear the internal memory from the screen. 
+  u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+  u8g2.drawStr(30,25,"scan your card"); //print a message using the oled screen
+  u8g2.sendBuffer(); // transfer internal memory to the display
+  delay(1000);
 }
 
 void buzzerErrorTone(){
