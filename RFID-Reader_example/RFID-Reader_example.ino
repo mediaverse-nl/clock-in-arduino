@@ -28,7 +28,7 @@ RestClient client = RestClient(api);
 
 //reusable test variables
 char* post_body = "";
-
+byte buzzerPin = 16;//defines buzzerpin 16 equals D0 on the wemos
 
 #define SS_PIN D8 //Pin on WeMos D1 Mini
 #define RST_PIN 15 // RST-PIN for RC522 - RFID - SPI - Modul GPIO15
@@ -36,16 +36,45 @@ char* post_body = "";
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 
 U8G2_SSD1327_MIDAS_128X128_F_HW_I2C u8g2(U8G2_R2, /* reset=*/ U8X8_PIN_NONE);//for the oled screen
-byte buzzerPin = 16;//defines buzzerpin 16 equals D0 on the wemos
+
 
 void setup(){
   Serial.begin(115200);//begins the serial monitor for testing purposes
   u8g2.begin();//begins the oled screen
   SPI.begin();//begins the spi 
   mfrc522.PCD_Init();   // Initiate the RFID Reader.
-  
+
+  Serial.println("connecting to the wifi");
   pinMode(buzzerPin, INPUT);
 }
+
+void api_status(int statusCode){
+   
+   delay(api_delay);
+   
+   if(statusCode == 200)
+   {
+    Serial.print("API ok (" + String(statusCode) + ")");
+   }
+   else
+   {
+    Serial.print("API fail (" + String(statusCode) + ")");
+   }
+   Serial.println();
+}
+
+void displayStartMsg(){
+  u8g2.clearDisplay();
+  u8g2.drawStr(30,25,"Clock In");
+}
+
+void setReader(){
+  //clears the screen.
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_ncenB08_tr);
+  u8g2.drawStr(30, 55,"connecting to the wifi:");
+}
+
 void connectionSucces(){
  
   u8g2.clearBuffer(); // clear the internal memory from the screen. 
@@ -71,10 +100,7 @@ void buzzerErrorTone(){
  //tone(buzzerPin, 600, 1000);
 }
 
-////unkown card
-//void unknown(){
-//  
-//}
+
 
 
 void normalScreen(){
@@ -84,7 +110,6 @@ void normalScreen(){
   u8g2.drawStr(30,25,"scan your chip"); //print a message using the oled screen
   u8g2.sendBuffer(); // transfer internal memory to the display
   delay(1000);
-    
 }
 
 //this looks for a new card that wis presented at a rfid
